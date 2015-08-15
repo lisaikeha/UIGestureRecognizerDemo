@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D7C0A17C1B7A0D13006CFBD3 /* HYHeiLiZhiTiJ.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D7C0A17B1B7A0D13006CFBD3 /* HYHeiLiZhiTiJ.ttf */; };
+		D7C0A17F1B7AF608006CFBD3 /* UILabel+VerticalAlignment.m in Sources */ = {isa = PBXBuildFile; fileRef = D7C0A17E1B7AF608006CFBD3 /* UILabel+VerticalAlignment.m */; };
+		D7C0A1821B7B24DF006CFBD3 /* TILabel.m in Sources */ = {isa = PBXBuildFile; fileRef = D7C0A1811B7B24DF006CFBD3 /* TILabel.m */; };
+		D7C0A1881B7E1043006CFBD3 /* TIEditorTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = D7C0A1871B7E1043006CFBD3 /* TIEditorTextView.m */; };
 		D7C68F501B749E50007DCD2B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D7C68F4F1B749E50007DCD2B /* main.m */; };
 		D7C68F531B749E50007DCD2B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D7C68F521B749E50007DCD2B /* AppDelegate.m */; };
 		D7C68F561B749E50007DCD2B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D7C68F551B749E50007DCD2B /* ViewController.m */; };
@@ -14,6 +18,7 @@
 		D7C68F5B1B749E50007DCD2B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D7C68F5A1B749E50007DCD2B /* Images.xcassets */; };
 		D7C68F5E1B749E50007DCD2B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D7C68F5C1B749E50007DCD2B /* LaunchScreen.xib */; };
 		D7C68F6A1B749E50007DCD2B /* EventHandleDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D7C68F691B749E50007DCD2B /* EventHandleDemoTests.m */; };
+		D7C68F751B75FFE2007DCD2B /* TIViewResizeView.m in Sources */ = {isa = PBXBuildFile; fileRef = D7C68F741B75FFE2007DCD2B /* TIViewResizeView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +32,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D7C0A17B1B7A0D13006CFBD3 /* HYHeiLiZhiTiJ.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = HYHeiLiZhiTiJ.ttf; sourceTree = "<group>"; };
+		D7C0A17D1B7AF608006CFBD3 /* UILabel+VerticalAlignment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+VerticalAlignment.h"; sourceTree = "<group>"; };
+		D7C0A17E1B7AF608006CFBD3 /* UILabel+VerticalAlignment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+VerticalAlignment.m"; sourceTree = "<group>"; };
+		D7C0A1801B7B24DF006CFBD3 /* TILabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TILabel.h; sourceTree = "<group>"; };
+		D7C0A1811B7B24DF006CFBD3 /* TILabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TILabel.m; sourceTree = "<group>"; };
+		D7C0A1861B7E1043006CFBD3 /* TIEditorTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TIEditorTextView.h; sourceTree = "<group>"; };
+		D7C0A1871B7E1043006CFBD3 /* TIEditorTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TIEditorTextView.m; sourceTree = "<group>"; };
 		D7C68F4A1B749E50007DCD2B /* EventHandleDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventHandleDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7C68F4E1B749E50007DCD2B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D7C68F4F1B749E50007DCD2B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -40,6 +52,8 @@
 		D7C68F631B749E50007DCD2B /* EventHandleDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EventHandleDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7C68F681B749E50007DCD2B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D7C68F691B749E50007DCD2B /* EventHandleDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EventHandleDemoTests.m; sourceTree = "<group>"; };
+		D7C68F731B75FFE2007DCD2B /* TIViewResizeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TIViewResizeView.h; sourceTree = "<group>"; };
+		D7C68F741B75FFE2007DCD2B /* TIViewResizeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TIViewResizeView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,14 +95,23 @@
 		D7C68F4C1B749E50007DCD2B /* EventHandleDemo */ = {
 			isa = PBXGroup;
 			children = (
+				D7C0A17D1B7AF608006CFBD3 /* UILabel+VerticalAlignment.h */,
+				D7C0A17E1B7AF608006CFBD3 /* UILabel+VerticalAlignment.m */,
+				D7C0A17B1B7A0D13006CFBD3 /* HYHeiLiZhiTiJ.ttf */,
 				D7C68F511B749E50007DCD2B /* AppDelegate.h */,
 				D7C68F521B749E50007DCD2B /* AppDelegate.m */,
 				D7C68F541B749E50007DCD2B /* ViewController.h */,
 				D7C68F551B749E50007DCD2B /* ViewController.m */,
+				D7C0A1861B7E1043006CFBD3 /* TIEditorTextView.h */,
+				D7C0A1871B7E1043006CFBD3 /* TIEditorTextView.m */,
 				D7C68F571B749E50007DCD2B /* Main.storyboard */,
 				D7C68F5A1B749E50007DCD2B /* Images.xcassets */,
 				D7C68F5C1B749E50007DCD2B /* LaunchScreen.xib */,
 				D7C68F4D1B749E50007DCD2B /* Supporting Files */,
+				D7C68F731B75FFE2007DCD2B /* TIViewResizeView.h */,
+				D7C68F741B75FFE2007DCD2B /* TIViewResizeView.m */,
+				D7C0A1801B7B24DF006CFBD3 /* TILabel.h */,
+				D7C0A1811B7B24DF006CFBD3 /* TILabel.m */,
 			);
 			path = EventHandleDemo;
 			sourceTree = "<group>";
@@ -202,6 +225,7 @@
 				D7C68F591B749E50007DCD2B /* Main.storyboard in Resources */,
 				D7C68F5E1B749E50007DCD2B /* LaunchScreen.xib in Resources */,
 				D7C68F5B1B749E50007DCD2B /* Images.xcassets in Resources */,
+				D7C0A17C1B7A0D13006CFBD3 /* HYHeiLiZhiTiJ.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,8 +244,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				D7C68F561B749E50007DCD2B /* ViewController.m in Sources */,
+				D7C0A1821B7B24DF006CFBD3 /* TILabel.m in Sources */,
 				D7C68F531B749E50007DCD2B /* AppDelegate.m in Sources */,
+				D7C68F751B75FFE2007DCD2B /* TIViewResizeView.m in Sources */,
 				D7C68F501B749E50007DCD2B /* main.m in Sources */,
+				D7C0A17F1B7AF608006CFBD3 /* UILabel+VerticalAlignment.m in Sources */,
+				D7C0A1881B7E1043006CFBD3 /* TIEditorTextView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -347,9 +375,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Huangxiong Wei (KN6Y9PX325)";
 				INFOPLIST_FILE = EventHandleDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -357,9 +389,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Huangxiong Wei (KN6Y9PX325)";
 				INFOPLIST_FILE = EventHandleDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -416,6 +452,7 @@
 				D7C68F6F1B749E50007DCD2B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D7C68F701B749E50007DCD2B /* Build configuration list for PBXNativeTarget "EventHandleDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -424,6 +461,7 @@
 				D7C68F721B749E50007DCD2B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

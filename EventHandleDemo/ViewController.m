@@ -10,6 +10,7 @@
 #import <CoreText/CoreText.h>
 #import "UILabel+VerticalAlignment.h"
 
+#import <objc/runtime.h>
 // views
 #import "TIViewResizeView.h"
 #import "TILabel.h"
@@ -31,8 +32,8 @@
     NSLog(@"viewController : %@",self);
     [self fontRegistTest];
 
+    [self addGestureRecognizer];
     [self.view addSubview:self.addButton];
-    [self.view addSubview:self.textView];
 }
 
 #pragma mark - font register
@@ -111,8 +112,9 @@
     shadow.shadowColor = [UIColor darkGrayColor];
     shadow.shadowOffset = CGSizeMake(0, 0);
     shadow.shadowBlurRadius = 3;
-    [self.array[0] setAttributedText:[text copy]];
-    [self.array[0] resizeLable];
+    TILabel *label = (TILabel *)[self.array[0] attachedView];
+    [label setAttributedText:[text copy]];
+    [label resizeLable];
 }
 
 - (void)motionCancelled:(UIEventSubtype)motion withEvent:(UIEvent *)event
@@ -120,60 +122,118 @@
     NSLog(@"取消");
 }
 
-#pragma mark - touches
+#pragma mark - gesture
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)addGestureRecognizer
 {
-    [super touchesBegan:touches withEvent:event];
-    UITouch *touch = [touches anyObject];
-    NSLog(@"begin");
-    NSMutableArray *subviews = [NSMutableArray array];
-    for(UIView *view in self.view.subviews)
-    {
-        CGPoint point = [view convertPoint:[touch locationInView:self.view] fromView:self.view];
-        if([view pointInside:point withEvent:event])
-        {
-            [subviews addObject:view];
-        }
-    }
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
+    [self.view addGestureRecognizer:singleTap];
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
+    doubleTap.numberOfTapsRequired = 2;
+    [self.view addGestureRecognizer:doubleTap];
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+    [self.view addGestureRecognizer:pan];
+    
+    //dependency
+    [singleTap requireGestureRecognizerToFail:doubleTap];
+}
+
+- (void)handleSingleTap:(UITapGestureRecognizer *)recognizer
+{
+    NSArray *subviews = [self resizeViewsAtPoint:[recognizer locationInView:self.view] ofSuperView:self.view];
     if(subviews.count == 0)
     {
-    
-    }
-    else if (subviews.count == 1)
-    {
-        [self.view bringSubviewToFront:[subviews firstObject]];
+        self.editingView = nil;
     }
     else
     {
-        UIView *front = [subviews lastObject];
-        UIView *secondFront = [subviews objectAtIndex:[subviews indexOfObject:front] - 1];
-        [self.view sendSubviewToBack:front];
-        [self.view bringSubviewToFront:secondFront];
+        if(self.editingView)
+        {
+            if (subviews.count == 1)
+            {
+                [self.view bringSubviewToFront:[subviews firstObject]];
+                self.editingView = [subviews firstObject];
+            }
+            else
+            {
+                UIView *front = [subviews lastObject];
+                UIView *secondFront = [subviews objectAtIndex:[subviews indexOfObject:front] - 1];
+                [self.view sendSubviewToBack:front];
+                [self.view bringSubviewToFront:secondFront];
+                self.editingView = secondFront;
+            }
+        }
+        else
+        {
+            self.editingView = [subviews lastObject];
+            [self.view bringSubviewToFront:self.editingView];
+        }
     }
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)handleDoubleTap:(UITapGestureRecognizer *)recognizer
 {
-    NSLog(@"move");
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    NSLog(@"end");
-    UITouch *touch = [touches anyObject];
-    if(touch.tapCount == 2)
+    NSArray *subviews = [self resizeViewsAtPoint:[recognizer locationInView:self.view] ofSuperView:self.view];
+    TIViewResizeView *target;
+    for(NSInteger index = subviews.count - 1 ; index >= 0 ; index --)
     {
-        NSLog(@"两次");
-        self.textView.hidden = NO;
-        [self.textView becomeFirstResponder];
+        TIViewResizeView *resizeView = [subviews objectAtIndex:index];
+        if([resizeView.attachedView isKindOfClass:[TILabel class]])
+        {
+            target = resizeView;
+            break;
+        }
+    }
+    if(target)
+    {
+        TILabel *label = (TILabel *)target.attachedView;
+        UIFont *font = [label.attributedText attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
+        self.textView.font = font;
+        if([label.attributedText.string isEqual:@"双击修改"])
+        {
+            self.textView.text = @"";
+        }
+        else
+        {
+            self.textView.text = label.attributedText.string;
+        }
+        self.editingView = target;
+        [self startEditingText];
     }
 }
 
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)handlePan:(UIPanGestureRecognizer *)recognizer
 {
-    NSLog(@"cancel");
+    if(recognizer.state == UIGestureRecognizerStateBegan)
+    {
+        NSLog(@"begin");
 
+        NSArray *subviews = [self resizeViewsAtPoint:[recognizer locationInView:self.view] ofSuperView:self.view];
+        if(subviews.count == 0)
+        {
+            self.editingView = nil;
+            objc_setAssociatedObject(recognizer, @"beginCenter", nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        }
+        else
+        {
+            self.editingView = [subviews lastObject];
+            [self.view bringSubviewToFront:self.editingView];
+            NSValue *beginCenter = [NSValue valueWithCGPoint:self.editingView.center];
+            objc_setAssociatedObject(recognizer, @"beginCenter", beginCenter, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        }
+    }
+    else if (recognizer.state == UIGestureRecognizerStateChanged)
+    {
+        CGPoint change = [recognizer translationInView:self.view];
+        if(self.editingView)
+        {
+            CGPoint beginCenter = [objc_getAssociatedObject(recognizer, @"beginCenter") CGPointValue];
+            CGPoint myCenter = beginCenter;
+            myCenter.x += change.x;
+            myCenter.y += change.y;
+            self.editingView.center = myCenter;
+        }
+    }
 }
 
 #pragma mark - delegate
@@ -182,31 +242,37 @@
 {
     if(!editorTextView.text || !editorTextView.text.length)
     {
-        [self.array[0] removeFromSuperview];
-        [self.array removeObjectAtIndex:0];
+        if(self.editingView)
+        {
+            [self.editingView removeFromSuperview];
+        }
+        if([self.array containsObject:self.editingView])
+        {
+            [self.array removeObject:self.editingView];
+        }
     }
     else
     {
-        TILabel *label = (TILabel *)[self.array[0] attachedView];
-
-        NSDictionary *attribute = [[label attributedText] attributesAtIndex:0 effectiveRange:NULL];
-        NSAttributedString *text = [[NSAttributedString alloc] initWithString:editorTextView.text attributes:attribute];
-        [label setAttributedText:text];
-        [label resizeLable];
+        TIViewResizeView *view = (TIViewResizeView *)self.editingView;
+        if(view && [view.attachedView isKindOfClass:[TILabel class]])
+        {
+            TILabel *label = (TILabel *)view.attachedView;
+            NSDictionary *attribute = [[label attributedText] attributesAtIndex:0 effectiveRange:NULL];
+            NSAttributedString *text = [[NSAttributedString alloc] initWithString:editorTextView.text attributes:attribute];
+            [label setAttributedText:text];
+            [label resizeLable];
+        }
     }
-    
-    self.textView.text = @"双击修改";
-    [self.textView resignFirstResponder];
-    self.textView.hidden = YES;
+    [self endEditingText];
 }
 
 #pragma mark - button actions
 
 - (void)addOneLabel
 {
-//    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:@"隐约雷鸣\n阴霾天空\n但盼雨来\n能留你在此地"];
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:@"隐约雷鸣\n阴霾天空\n但盼雨来\n能留你在此地"];
 //    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:@"是啊\n啊啊\n啊啊\n氨基\n酸的\n你妹"];
-    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:@"双击修改"];
+//    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:@"双击修改"];
 
     [text addAttribute:NSKernAttributeName value:@(10) range:(NSRange){0, text.length}];
     NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
@@ -223,16 +289,40 @@
     CGRect bound = [text boundingRectWithSize:CGSizeMake(DBL_MAX, DBL_MAX) options:NSStringDrawingUsesLineFragmentOrigin context:nil];
     bound.origin = CGPointMake(0, 50);
     TILabel *label = [[TILabel alloc] initWithFrame:CGRectZero];
-    label.backgroundColor = [UIColor yellowColor];
-//    label.attributedText = text;
-    label.text = @"隐约雷鸣\n阴霾天空\n但盼雨来\n能留你在此地";
-    label.font = [UIFont fontWithName:@"HYHeiLiZhiTiJ" size:31];
-    label.numberOfLines = 0;
+    label.attributedText = text;
     [label resizeLable];
     TIViewResizeView *resizeView = [[TIViewResizeView alloc] initWithAttachedView:label];
-//    [self.view addSubview:label];
     [self.view addSubview:resizeView];
     [self.array addObject:resizeView];
+}
+
+#pragma mark - private
+
+- (NSArray *)resizeViewsAtPoint:(CGPoint)point ofSuperView:(UIView *)superView
+{
+    NSMutableArray *subviews = [NSMutableArray array];
+    for(UIView *view in superView.subviews)
+    {
+        CGPoint insidePoint = [view convertPoint:point fromView:superView];
+        if([view pointInside:insidePoint withEvent:nil] && [view isKindOfClass:[TIViewResizeView class]])
+        {
+            [subviews addObject:view];
+        }
+    }
+    return [subviews copy];
+}
+
+- (void)startEditingText
+{
+    [self.view addSubview:self.textView];
+    [self.textView becomeFirstResponder];
+}
+
+- (void)endEditingText
+{
+    self.textView.text = @"";
+    [self.textView resignFirstResponder];
+    [self.textView removeFromSuperview];
 }
 
 #pragma mark - getter
@@ -243,7 +333,7 @@
     {
         _addButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
         [_addButton addTarget:self action:@selector(addOneLabel) forControlEvents:UIControlEventTouchUpInside];
-        _addButton.center = CGPointMake(30, 30);
+        _addButton.center = CGPointMake(345, 30);
     }
     return _addButton;
 }
@@ -262,10 +352,26 @@
     if(!_textView)
     {
         _textView = [[TIEditorTextView alloc] initWithFrame:CGRectMake(0, 200, CGRectGetWidth(self.view.bounds), 200)];
-        _textView.hidden = YES;
         _textView.editorDelegate = self;
     }
     return _textView;
+}
+
+#pragma mark - setter
+
+- (void)setEditingView:(UIView *)editingView
+{
+    if(_editingView)
+    {
+        [(TIViewResizeView *)_editingView setShowBorder:NO];
+        [(TIViewResizeView *)_editingView setShowControls:NO];
+    }
+    if(editingView)
+    {
+        [(TIViewResizeView *)editingView setShowBorder:YES];
+        [(TIViewResizeView *)editingView setShowControls:YES];
+    }
+    _editingView = editingView;
 }
 
 @end

@@ -15,6 +15,21 @@ static CGFloat const MIN_FONTSIZE = 12;
 
 @implementation TILabel
 
+- (instancetype)init
+{
+    return [self initWithFrame:CGRectZero];
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if(self)
+    {
+        self.numberOfLines = 0;
+    }
+    return self;
+}
+
 #pragma mark - delegates
 
 - (void)resizeView:(TIViewResizeView *)resizeView changeToScale:(CGFloat)scale changeToAngle:(CGFloat)angle

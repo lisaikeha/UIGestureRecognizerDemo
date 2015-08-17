@@ -33,7 +33,7 @@ static CGFloat const BUTTON_SIZE = 25;
         _button.backgroundColor = [UIColor yellowColor];
         _button.layer.cornerRadius = BUTTON_SIZE / 2;
         [_button addTarget:self action:@selector(buttonAction) forControlEvents:UIControlEventTouchUpInside];
-        self.backgroundColor = [UIColor colorWithWhite:0.95 alpha:0.5];
+        self.backgroundColor = [UIColor colorWithWhite:0.95 alpha:0.7];
         [self addSubview:_button];
     }
     return self;

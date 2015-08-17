@@ -14,8 +14,6 @@ static CGFloat const MIN_SIZE = 10;
 static CGFloat const CONTROL_SIZE = 23;
 static NSString *const SELF_KEYPATH_BOUNDS = @"bounds";
 static NSString *const SELF_KEYPATH_ATTACHEDVIEW_BOUNDS = @"attachedView.bounds";
-//static NSString *const SELF_KEYPATH_ATTACHEDVIEW_CENTER = @"attachedView.center";
-static NSString *const SELF_KEYPATH_ATTACHEDVIEW_TRANSFORM = @"attachedView.transform";
 
 @interface TIViewResizeView ()
 
@@ -52,7 +50,6 @@ static NSString *const SELF_KEYPATH_ATTACHEDVIEW_TRANSFORM = @"attachedView.tran
                   options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew |NSKeyValueObservingOptionOld
                   context:&PrivateContext];
         
-        self.layer.borderWidth = 1.0;
         self.layer.borderColor = [[UIColor redColor] CGColor];
         self.userInteractionEnabled = YES;
         if(view)
@@ -61,14 +58,10 @@ static NSString *const SELF_KEYPATH_ATTACHEDVIEW_TRANSFORM = @"attachedView.tran
             [self addObserver:self forKeyPath:SELF_KEYPATH_ATTACHEDVIEW_BOUNDS
                       options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
                       context:&PrivateContext];
-//            [self addObserver:self forKeyPath:SELF_KEYPATH_ATTACHEDVIEW_CENTER
-//                      options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
-//                      context:&PrivateContext];
-//            [self addObserver:self forKeyPath:SELF_KEYPATH_ATTACHEDVIEW_TRANSFORM
-//                      options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
-//                      context:&PrivateContext];
             [self addSubview:view];
         }
+        self.showBorder = NO;
+        self.showControls = NO;
         [self addSubview:self.rightBottomControl];
         [self addSubview:self.leftTopControl];
     }
@@ -81,8 +74,6 @@ static NSString *const SELF_KEYPATH_ATTACHEDVIEW_TRANSFORM = @"attachedView.tran
     if(self.attachedView)
     {
         [self removeObserver:self forKeyPath:SELF_KEYPATH_ATTACHEDVIEW_BOUNDS context:&PrivateContext];
-//        [self removeObserver:self forKeyPath:SELF_KEYPATH_ATTACHEDVIEW_CENTER context:&PrivateContext];
-//        [self removeObserver:self forKeyPath:SELF_KEYPATH_ATTACHEDVIEW_TRANSFORM context:&PrivateContext];
     }
 }
 
@@ -90,11 +81,11 @@ static NSString *const SELF_KEYPATH_ATTACHEDVIEW_TRANSFORM = @"attachedView.tran
 {
     CGPoint rightBottomPosition = [self convertPoint:point toView:self.rightBottomControl];
     CGPoint leftTopPosition = [self convertPoint:point toView:self.leftTopControl];
-    if([self.rightBottomControl pointInside:rightBottomPosition withEvent:event])
+    if([self.rightBottomControl pointInside:rightBottomPosition withEvent:event] && !self.rightBottomControl.hidden)
     {
         return self.rightBottomControl;
     }
-    else if([self.leftTopControl pointInside:leftTopPosition withEvent:event])
+    else if([self.leftTopControl pointInside:leftTopPosition withEvent:event] && !self.leftTopControl.hidden)
     {
         return self.leftTopControl;
     }
@@ -102,46 +93,6 @@ static NSString *const SELF_KEYPATH_ATTACHEDVIEW_TRANSFORM = @"attachedView.tran
     {
         return [super hitTest:point withEvent:event];
     }
-}
-
-#pragma mark - UIResponder overrides
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [super touchesBegan:touches withEvent:event];
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [super touchesMoved:touches withEvent:event];
-    UITouch *aTouch = [touches anyObject];
-    if(![aTouch.view isEqual:self])
-        return;
-    
-    CGPoint loc = [aTouch locationInView:self.superview];
-    CGPoint prevloc = [aTouch previousLocationInView:self.superview];
-    
-    CGPoint myCenter = self.center;
-    float deltaX = loc.x - prevloc.x;
-    float deltaY = loc.y - prevloc.y;
-    myCenter.x += deltaX;
-    myCenter.y += deltaY;
-    self.center = myCenter;
-    
-//    if(self.attachedView)
-//    {
-//        self.attachedView.center = myCenter;
-//    }
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [super touchesEnded:touches withEvent:event];
-}
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [super touchesCancelled:touches withEvent:event];
 }
 
 #pragma mark - right bottom control
@@ -213,7 +164,6 @@ static NSString *const SELF_KEYPATH_ATTACHEDVIEW_TRANSFORM = @"attachedView.tran
                 if(self.attachedView)
                 {
                     self.attachedView.bounds = newBounds;
-//                    self.attachedView.transform = CGAffineTransformMakeRotation(angle);
                 }
             }
         }
@@ -245,10 +195,6 @@ static NSString *const SELF_KEYPATH_ATTACHEDVIEW_TRANSFORM = @"attachedView.tran
 
 - (void)leftTopTapped:(UITapGestureRecognizer *)recognizer
 {
-//    if(self.attachedView)
-//    {
-//        [self.attachedView removeFromSuperview];
-//    }
     [self removeFromSuperview];
 }
 
@@ -294,30 +240,6 @@ static NSString *const SELF_KEYPATH_ATTACHEDVIEW_TRANSFORM = @"attachedView.tran
             rect.size.height += 10;
             self.bounds = rect;
         }
-//        else if([keyPath isEqualToString:SELF_KEYPATH_ATTACHEDVIEW_CENTER])
-//        {
-//            if(![change[NSKeyValueChangeNewKey] isKindOfClass:[NSValue class]])
-//            {
-//                return;
-//            }
-//            if([change[NSKeyValueChangeOldKey] isKindOfClass:[NSValue class]] && CGPointEqualToPoint([change[NSKeyValueChangeNewKey] CGPointValue], [change[NSKeyValueChangeOldKey] CGPointValue]))
-//            {
-//                return;
-//            }
-//            self.center = [change[NSKeyValueChangeNewKey] CGPointValue];
-//        }
-//        else if([keyPath isEqualToString:SELF_KEYPATH_ATTACHEDVIEW_TRANSFORM])
-//        {
-//            if(![change[NSKeyValueChangeNewKey] isKindOfClass:[NSValue class]])
-//            {
-//                return;
-//            }
-//            if([change[NSKeyValueChangeOldKey] isKindOfClass:[NSValue class]] && CGAffineTransformEqualToTransform([change[NSKeyValueChangeNewKey] CGAffineTransformValue], [change[NSKeyValueChangeOldKey] CGAffineTransformValue]))
-//            {
-//                return;
-//            }
-//            self.transform = [change[NSKeyValueChangeNewKey] CGAffineTransformValue];
-//        }
     }
     else
     {
@@ -351,6 +273,36 @@ static NSString *const SELF_KEYPATH_ATTACHEDVIEW_TRANSFORM = @"attachedView.tran
         [_leftTopControl addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(leftTopTapped:)]];
     }
     return _leftTopControl;
+}
+
+#pragma mark - setter
+
+- (void)setShowControls:(BOOL)showControls
+{
+    if(showControls)
+    {
+        self.rightBottomControl.hidden = NO;
+        self.leftTopControl.hidden = NO;
+    }
+    else
+    {
+        self.rightBottomControl.hidden = YES;
+        self.leftTopControl.hidden = YES;
+    }
+    _showControls = showControls;
+}
+
+- (void)setShowBorder:(BOOL)showBorder
+{
+    if(showBorder)
+    {
+        self.layer.borderWidth = 1.0;
+    }
+    else
+    {
+        self.layer.borderWidth = 0;
+    }
+    _showBorder = showBorder;
 }
 
 @end

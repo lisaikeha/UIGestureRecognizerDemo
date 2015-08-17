@@ -21,6 +21,8 @@
 
 @property (nonatomic, assign, readonly) CGFloat angle;
 @property (nonatomic, strong, readonly) UIView *attachedView;
+@property (nonatomic, assign) BOOL showBorder;
+@property (nonatomic, assign) BOOL showControls;
 
 - (instancetype)initWithFrame:(CGRect)frame attachedView:(UIView *)view;
 
